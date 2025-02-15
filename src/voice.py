@@ -61,8 +61,8 @@ def play(file_path):
 
 
 def speak(string):
-    # * string input will be prioritized over path input if both are provided
     print("Speaking...")
+    print(string)
     play(synthesize(string))
     print("Finished speaking")
 
