@@ -10,6 +10,7 @@ language = "de"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 speakers = list(filter(lambda model: model.startswith(f"tts_models/{language}"), TTS().list_models()))
+print(speakers)
 
 if not os.path.exists("out"):
     os.makedirs("out")
