@@ -1,8 +1,8 @@
 import pyaudio
 import wave
 import whisper
-import time
 import torch
+import numpy as np
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -29,13 +29,20 @@ class Listener:
             frames.append(data)
         print("Done listening")
         self.close()
-        path_to_wav = frames_to_wav(frames)
-        result = self.wav_to_text(path_to_wav)
+        
+        audio_bytes = b"".join(frames)
+        audio_np = np.frombuffer(audio_bytes, dtype=np.int16).astype(np.float32)
+        audio_np /= 32768.0  # Normierung auf [-1, 1]
+        
+        #path_to_wav = frames_to_wav(frames)
+        #result = self.audio_to_text(path_to_wav)
+        
+        result = self.audio_to_text(audio_np)
         return result["text"]
     
-    def wav_to_text(self, file_path):
+    def audio_to_text(self, audio):
         print("Converting wav to text...")
-        text = self.whisper_model.transcribe(file_path, language=self.language)
+        text = self.whisper_model.transcribe(audio, language=self.language)
         print("Done converting")
         return text
 
