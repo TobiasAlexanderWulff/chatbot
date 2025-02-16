@@ -14,37 +14,30 @@ class Listener:
         self.language = language
         self.chunk = 1024
         self.p = pyaudio.PyAudio()
-        self.stream = self.p.open(format=pyaudio.paInt16,
-                                  channels=1,
-                                  rate=16000,
-                                  input=True,
-                                  frames_per_buffer=self.chunk)
         print("Listener initialized")
 
     def listen(self, duration=5):
         print("Listening...")
+        self.stream = self.p.open(format=pyaudio.paInt16,
+                          channels=1,
+                          rate=16000,
+                          input=True,
+                          frames_per_buffer=self.chunk)
         frames = []
         for _ in range(0, int(16000 / self.chunk * duration)):
             data = self.stream.read(self.chunk)
             frames.append(data)
         print("Done listening")
-        self.close()
         
         audio_bytes = b"".join(frames)
         audio_np = np.frombuffer(audio_bytes, dtype=np.int16).astype(np.float32)
         audio_np /= 32768.0  # Normierung auf [-1, 1]
         
-        #path_to_wav = frames_to_wav(frames)
-        #result = self.audio_to_text(path_to_wav)
+        result = self.whisper_model.transcribe(audio_np, language=self.language) # Speach to text
         
-        result = self.audio_to_text(audio_np)
         return result["text"]
     
-    def audio_to_text(self, audio):
-        print("Converting wav to text...")
-        text = self.whisper_model.transcribe(audio, language=self.language)
-        print("Done converting")
-        return text
+
 
     def close(self):
         print("Closing listener...")
