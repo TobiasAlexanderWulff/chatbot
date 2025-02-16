@@ -16,6 +16,7 @@ class Chatbot:
     
     def shutdown(self):
         self.listener.close()
+        self.voice.close()
     
     def generate_response(self, input):
         completion = self.client.chat.completions.create(
