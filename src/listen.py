@@ -27,37 +27,24 @@ class Listener:
         for _ in range(0, int(16000 / self.chunk * duration)):
             data = self.stream.read(self.chunk)
             frames.append(data)
-        print("Done listening")
         
         audio_bytes = b"".join(frames)
         audio_np = np.frombuffer(audio_bytes, dtype=np.int16).astype(np.float32)
         audio_np /= 32768.0  # Normierung auf [-1, 1]
         
-        result = self.whisper_model.transcribe(audio_np, language=self.language) # Speach to text
+        result = self.whisper_model.transcribe(audio_np, language=self.language)["text"] # Speach to text
         
-        return result["text"]
-    
-
+        print(f"User: {result}")
+        
+        return result
 
     def close(self):
-        print("Closing listener...")
         self.stream.stop_stream()
         self.stream.close()
         self.p.terminate()
-        print("Listener closed")
 
 
-def frames_to_wav(frames):
-    print("Saving as wav...")
-    file_path = "temp/recording.wav"
-    wf = wave.open(file_path, 'wb')
-    wf.setnchannels(1)
-    wf.setsampwidth(2)
-    wf.setframerate(16000)
-    wf.writeframes(b''.join(frames))
-    wf.close()
-    print("Saved as wav")
-    return file_path
+
 
 if __name__ == '__main__':
     listener = Listener()

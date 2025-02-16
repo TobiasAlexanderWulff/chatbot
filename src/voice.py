@@ -39,7 +39,6 @@ class Voice:
         except FileNotFoundError:
             print("File not found")
             exit(1)
-    
         stream = self.p.open(format=self.p.get_format_from_width(wf.getsampwidth()),
                         channels=wf.getnchannels(),
                         rate=wf.getframerate(),
@@ -47,20 +46,16 @@ class Voice:
                         output_device_index=0)
     
         data = wf.readframes(chunk)
-    
         while data:
             stream.write(data)
             data = wf.readframes(chunk)
-    
         stream.stop_stream()
         stream.close()
 
     
     def speak(self, string):
-        print("Speaking...")
-        print(string)
+        print(f"Chatbot: {string}")
         self.play(self.synthesize(string))
-        print("Finished speaking")
     
     def close(self):
         self.p.terminate()
