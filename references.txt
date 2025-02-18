@@ -1,2 +1,3 @@
 https://coqui-tts.readthedocs.io/en/latest/installation.html
 https://openai.com/index/whisper/
+https://flask.palletsprojects.com/en/stable/#
