@@ -1,12 +1,12 @@
 from listen import Listener
-from voice import Voice
+from voice import Voice, Voice2
 from openai import OpenAI
 
 
 class Chatbot:
     def __init__(self):
         self.listener = Listener()
-        self.voice = Voice()
+        self.voice = Voice2()
         self.client = OpenAI()
     
     def ask_question(self):
